@@ -5,10 +5,12 @@
 This template provides a complete setup for Vue 3 to work in Vite with TypeScript. It's designed to help you quickly start a new Vue project with modern technologies and an optimized project structure.
 
 ### System Requirements
+
 - Node: >= 18.16.0
 - NPM or Yarn
 
 ### Core Technology Versions
+
 - Vue: v3.5.13
 - Vite: v6.0.5
 - TypeScript: ~5.6.2
@@ -62,26 +64,32 @@ npm run lint
 ## Technologies Used
 
 ### Core
+
 - **Vue 3**: Modern UI library with Composition API, improved TypeScript support, and better performance.
 - **Vite**: Fast, efficient build tool designed for modern web development.
 - **TypeScript**: Static type support, helping to detect errors early and improve development experience.
 
 ### State and Data Management
+
 - **[TanStack Vue Query](https://tanstack.com/query/latest/docs/vue/overview)**: Server-state management library, providing hooks for fetching, caching, and updating data.
 - **[Axios](https://axios-http.com/)**: Promise-based HTTP client for making API requests.
 
 ### Routing
+
 - **[Vue Router](https://router.vuejs.org/)**: Official router for Vue.js, supporting dynamic routing and nested routes.
 
 ### Forms and Validation
+
 - **[VeeValidate](https://vee-validate.logaretm.com/v4/)**: Form validation library for Vue.js.
 - **[Yup](https://github.com/jquense/yup)**: Schema validation library, integrates well with VeeValidate.
 
 ### Styling
+
 - **[TailwindCSS](https://tailwindcss.com/)**: Utility-first CSS framework, helping to build UI quickly and consistently.
 - **[PostCSS](https://postcss.org/)**: Tool for transforming CSS with JavaScript plugins.
 
 ### Development Tools
+
 - **[ESLint](https://eslint.org/)**: Linting tool to detect and fix errors in JavaScript/TypeScript code.
 - **[Prettier](https://prettier.io/)**: Automatic code formatter, ensuring consistent code style.
 - **[Husky](https://typicode.github.io/husky/)**: Git hooks manager, automatically running scripts before commit/push.
@@ -234,43 +242,43 @@ gitGraph
     branch develop
     checkout develop
     commit
-    
+
     branch feature/login
     checkout feature/login
     commit
     commit
     checkout develop
     merge feature/login
-    
+
     branch feature/dashboard
     checkout feature/dashboard
     commit
     commit
     checkout develop
     merge feature/dashboard
-    
+
     checkout main
     merge develop tag:"v1.0.0"
-    
+
     checkout develop
     commit
-    
+
     branch feature/notifications
     checkout feature/notifications
     commit
     checkout develop
     merge feature/notifications
-    
+
     checkout main
     branch hotfix/critical-bug
     checkout hotfix/critical-bug
     commit
     checkout main
     merge hotfix/critical-bug tag:"v1.0.1"
-    
+
     checkout develop
     merge hotfix/critical-bug
-    
+
     checkout develop
     branch release/v1.1.0
     checkout release/v1.1.0
@@ -292,14 +300,16 @@ gitGraph
 ### Workflow
 
 1. **Feature Development**
+
    - Create a feature branch from develop: `git checkout -b feature/new-feature develop`
    - Develop the feature with regular commits
    - When complete, create a PR to merge back into develop
 
 2. **Release Preparation**
+
    - Create a release branch when develop is ready for release: `git checkout -b release/v1.0.0 develop`
    - Make only bug fixes and documentation updates in this branch
-   - When ready, merge to both main and develop: 
+   - When ready, merge to both main and develop:
      ```
      git checkout main
      git merge --no-ff release/v1.0.0

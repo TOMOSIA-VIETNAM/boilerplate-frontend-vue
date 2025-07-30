@@ -2,10 +2,9 @@
   <RouterView v-if="isReady" />
 </template>
 
-<script setup lang="tsx">
-import { getMe } from '@/apis/auth.api'
+<script setup lang="ts">
+import { getAccessTokenFromLocalStorage } from '@/utils/localStorage'
 import { useAuthStore } from '@/stores/auth.store'
-import { useQuery } from '@tanstack/vue-query'
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -16,30 +15,45 @@ const route = useRoute()
 
 const isReady = ref(false)
 
-const { data: getMeResponse, isLoading } = useQuery({
-  queryKey: ['me'],
-  queryFn: () => getMe()
+const isAuthenticated = computed(() => {
+  const token = getAccessTokenFromLocalStorage()
+  return !!token
 })
 
-const profile = computed(() => getMeResponse.value?.data)
+watch(
+  isAuthenticated,
+  (authenticated) => {
+    console.log('Auth state changed:', authenticated, 'Current route:', route.path)
 
-watch(profile, (profile) => {
-  if (profile) {
-    authStore.setUser(profile)
+    if (!authenticated && !withoutAuthRoutes.includes(route.path)) {
+      // Not authenticated and trying to access protected route
+      console.log('Redirecting to login - not authenticated')
+      router.push('/login')
+    }
+
+    if (authenticated && withoutAuthRoutes.includes(route.path)) {
+      // Authenticated and trying to access login page
+      console.log('Redirecting to home - already authenticated')
+      router.push('/')
+    }
+
+    isReady.value = true
+  },
+  { immediate: true }
+)
+
+// Set user data if authenticated
+watch(isAuthenticated, (authenticated) => {
+  if (authenticated) {
+    // Set a default user object when authenticated
+    authStore.setUser({
+      username: 'admin',
+      email: 'admin@example.com',
+      firstName: 'Admin',
+      lastName: 'User'
+    })
+  } else {
+    authStore.clearUser()
   }
-})
-
-watch(isLoading, (isLoading) => {
-  if (isLoading) return
-
-  if (!profile.value && !withoutAuthRoutes.includes(route.path)) {
-    router.push('/login')
-  }
-
-  if (profile.value && withoutAuthRoutes.includes(route.path)) {
-    router.push('/')
-  }
-
-  isReady.value = true
 })
 </script>

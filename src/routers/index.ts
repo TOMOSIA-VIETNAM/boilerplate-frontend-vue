@@ -25,6 +25,14 @@ const router = createRouter({
                 layout: 'Default'
               },
               component: () => import('@/pages/Top/index.vue')
+            },
+            {
+              path: '/template',
+              name: 'template',
+              meta: {
+                layout: 'Default'
+              },
+              component: () => import('@/pages/Template/index.vue')
             }
           ]
         }
