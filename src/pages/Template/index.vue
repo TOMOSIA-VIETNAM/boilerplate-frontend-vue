@@ -185,7 +185,7 @@
       </CardContent>
     </Card>
 
-    <!-- Data Table Section (mock, không có logic động) -->
+    <!-- Data Table Section (mock, no dynamic logic) -->
     <Card>
       <CardHeader>
         <CardTitle>Data Table with Search & Sort</CardTitle>

@@ -95,19 +95,19 @@ const isDropdownOpen = ref(false)
 const dropdownTrigger = ref<HTMLElement>()
 
 const toggleDropdown = () => {
-  console.log('Toggle dropdown clicked, current state:', isDropdownOpen.value)
+  
   isDropdownOpen.value = !isDropdownOpen.value
-  console.log('New state:', isDropdownOpen.value)
+  
 }
 
 const navigateToProfile = () => {
   isDropdownOpen.value = false
-  console.log('Navigate to profile')
+  
 }
 
 const navigateToSettings = () => {
   isDropdownOpen.value = false
-  console.log('Navigate to settings')
+  
 }
 
 const handleLogout = () => {

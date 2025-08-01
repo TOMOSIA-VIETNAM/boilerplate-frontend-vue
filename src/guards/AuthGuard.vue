@@ -23,17 +23,17 @@ const isAuthenticated = computed(() => {
 watch(
   isAuthenticated,
   (authenticated) => {
-    console.log('Auth state changed:', authenticated, 'Current route:', route.path)
+
 
     if (!authenticated && !withoutAuthRoutes.includes(route.path)) {
       // Not authenticated and trying to access protected route
-      console.log('Redirecting to login - not authenticated')
+
       router.push('/login')
     }
 
     if (authenticated && withoutAuthRoutes.includes(route.path)) {
       // Authenticated and trying to access login page
-      console.log('Redirecting to home - already authenticated')
+
       router.push('/')
     }
 
