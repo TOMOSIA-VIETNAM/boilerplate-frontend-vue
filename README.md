@@ -140,6 +140,375 @@ npm run lint
 └── tsconfig.json          # TypeScript configuration
 ```
 
+## Coding Conventions
+
+### General Principles
+
+- **Clean Code**: Write code that is easy to read, understand, and maintain
+- **DRY (Don't Repeat Yourself)**: Avoid code duplication, prefer reusable components and functions
+- **Single Responsibility**: Each function, component, or module should have one clear purpose
+- **Consistency**: Follow established patterns and conventions throughout the project
+
+### File and Folder Naming
+
+#### Components
+
+- Use **PascalCase** for component files: `UserProfile.vue`, `ProductCard.vue`
+- Use **kebab-case** for component folders: `user-profile/`, `product-card/`
+- Group related components in feature folders: `components/User/`, `components/Product/`
+
+#### Utilities and Services
+
+- Use **camelCase** for utility files: `formatDate.ts`, `apiClient.ts`
+- Use **kebab-case** for folders: `api-endpoints/`, `validation-helpers/`
+
+#### Pages
+
+- Use **PascalCase** for page components: `HomePage.vue`, `UserDashboard.vue`
+- Use **kebab-case** for page folders: `home-page/`, `user-dashboard/`
+
+### Vue Component Conventions
+
+#### Component Structure
+
+```vue
+<template>
+  <!-- Template content -->
+</template>
+
+<script setup lang="ts">
+// Imports
+import { ref, computed } from 'vue'
+import type { ComponentProps } from './types'
+
+// Props definition
+interface Props {
+  title: string
+  count?: number
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  count: 0
+})
+
+// Emits definition
+interface Emits {
+  update: [value: string]
+  delete: [id: number]
+}
+
+const emit = defineEmits<Emits>()
+
+// Reactive data
+const isLoading = ref(false)
+const items = ref<string[]>([])
+
+// Computed properties
+const totalItems = computed(() => items.value.length)
+
+// Methods
+const handleSubmit = () => {
+  // Implementation
+}
+
+// Lifecycle hooks
+onMounted(() => {
+  // Implementation
+})
+</script>
+
+<style scoped>
+/* Component styles */
+</style>
+```
+
+#### Component Naming
+
+- Use **PascalCase** for component names in template
+- Use **kebab-case** for component names in template when using custom elements
+- Prefix base components with `Base`: `BaseButton`, `BaseInput`
+- Prefix layout components with `Layout`: `LayoutHeader`, `LayoutSidebar`
+
+### TypeScript Conventions
+
+#### Type Definitions
+
+```typescript
+// Use PascalCase for interfaces and types
+interface UserProfile {
+  id: number
+  name: string
+  email: string
+  avatar?: string
+}
+
+// Use PascalCase for enums
+enum UserRole {
+  ADMIN = 'admin',
+  USER = 'user',
+  MODERATOR = 'moderator'
+}
+
+// Use camelCase for type aliases
+type ApiResponse<T> = {
+  data: T
+  status: number
+  message: string
+}
+```
+
+#### Function Naming
+
+```typescript
+// Use camelCase for functions
+const formatCurrency = (amount: number): string => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  }).format(amount)
+}
+
+// Use descriptive names that indicate the action
+const fetchUserData = async (userId: number): Promise<User> => {
+  // Implementation
+}
+
+const validateEmail = (email: string): boolean => {
+  // Implementation
+}
+```
+
+### API and Data Management
+
+#### API Service Structure
+
+```typescript
+// src/apis/user.api.ts
+import { axiosClient } from './axiosClient'
+import type { User, CreateUserRequest } from '@/types/user.types'
+
+export const userApi = {
+  // GET requests
+  getUsers: () => axiosClient.get<User[]>('/users'),
+  getUserById: (id: number) => axiosClient.get<User>(`/users/${id}`),
+
+  // POST requests
+  createUser: (data: CreateUserRequest) => axiosClient.post<User>('/users', data),
+
+  // PUT requests
+  updateUser: (id: number, data: Partial<User>) => axiosClient.put<User>(`/users/${id}`, data),
+
+  // DELETE requests
+  deleteUser: (id: number) => axiosClient.delete(`/users/${id}`)
+}
+```
+
+#### Query Keys
+
+```typescript
+// Use consistent query key structure
+export const userKeys = {
+  all: ['users'] as const,
+  lists: () => [...userKeys.all, 'list'] as const,
+  list: (filters: UserFilters) => [...userKeys.lists(), filters] as const,
+  details: () => [...userKeys.all, 'detail'] as const,
+  detail: (id: number) => [...userKeys.details(), id] as const
+}
+```
+
+### Styling Conventions
+
+#### Tailwind CSS
+
+- Use utility classes for styling
+- Group related classes logically
+- Use responsive prefixes consistently
+- Prefer Tailwind utilities over custom CSS
+
+```vue
+<template>
+  <div class="flex items-center justify-between rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
+    <h2 class="text-lg font-semibold text-gray-900">User Profile</h2>
+    <button
+      class="rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+    >
+      Edit
+    </button>
+  </div>
+</template>
+```
+
+#### Custom CSS
+
+- Use `scoped` styles when possible
+- Use CSS custom properties for theme values
+- Follow BEM methodology for custom CSS classes
+
+```vue
+<style scoped>
+.user-card {
+  @apply rounded-lg bg-white p-4 shadow-sm;
+}
+
+.user-card__header {
+  @apply mb-4 flex items-center justify-between;
+}
+
+.user-card__title {
+  @apply text-lg font-semibold text-gray-900;
+}
+
+.user-card__content {
+  @apply space-y-2;
+}
+</style>
+```
+
+### Error Handling
+
+#### API Error Handling
+
+```typescript
+// Use consistent error handling patterns
+const handleApiError = (error: unknown) => {
+  if (axios.isAxiosError(error)) {
+    const message = error.response?.data?.message || 'An error occurred'
+    // Handle specific error cases
+    switch (error.response?.status) {
+      case 401:
+        // Handle unauthorized
+        break
+      case 404:
+        // Handle not found
+        break
+      default:
+      // Handle other errors
+    }
+  }
+}
+```
+
+#### Component Error Boundaries
+
+```vue
+<script setup lang="ts">
+import { onErrorCaptured } from 'vue'
+
+onErrorCaptured((error, instance, info) => {
+  // Log error and handle gracefully
+  console.error('Component error:', error)
+  return false // Prevent error from propagating
+})
+</script>
+```
+
+### Performance Best Practices
+
+#### Component Optimization
+
+```vue
+<script setup lang="ts">
+import { defineAsyncComponent } from 'vue'
+
+// Lazy load components
+const HeavyComponent = defineAsyncComponent(() => import('./HeavyComponent.vue'))
+
+// Use v-memo for expensive computations
+const expensiveValue = computed(() => {
+  // Expensive computation
+})
+</script>
+
+<template>
+  <div v-memo="[expensiveValue]">
+    <!-- Content that depends on expensiveValue -->
+  </div>
+</template>
+```
+
+#### List Rendering
+
+```vue
+<template>
+  <!-- Always use key with v-for -->
+  <div v-for="item in items" :key="item.id" class="item">
+    {{ item.name }}
+  </div>
+
+  <!-- Use v-show for frequently toggled elements -->
+  <div v-show="isVisible" class="tooltip">Tooltip content</div>
+</template>
+```
+
+### Testing Conventions
+
+#### Component Testing
+
+```typescript
+// Use descriptive test names
+describe('UserProfile', () => {
+  it('should display user information correctly', () => {
+    // Test implementation
+  })
+
+  it('should emit update event when form is submitted', () => {
+    // Test implementation
+  })
+
+  it('should handle loading state properly', () => {
+    // Test implementation
+  })
+})
+```
+
+### Documentation
+
+#### Code Comments
+
+- Comment complex business logic
+- Document non-obvious code decisions
+- Use JSDoc for function documentation
+- Avoid commenting obvious code
+
+```typescript
+/**
+ * Formats a date string to a human-readable format
+ * @param dateString - ISO date string
+ * @param locale - Locale for formatting (default: 'en-US')
+ * @returns Formatted date string
+ */
+const formatDate = (dateString: string, locale = 'en-US'): string => {
+  return new Intl.DateTimeFormat(locale, {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  }).format(new Date(dateString))
+}
+```
+
+#### README Documentation
+
+- Keep documentation up to date
+- Include setup instructions
+- Document API changes
+- Provide usage examples
+
+### Git Workflow
+
+#### Branch Naming
+
+- Feature branches: `feature/user-authentication`
+- Bug fixes: `fix/login-validation`
+- Hotfixes: `hotfix/critical-security-issue`
+- Releases: `release/v1.2.0`
+
+#### Commit Messages
+
+- Follow conventional commits format
+- Use present tense
+- Be descriptive but concise
+- Reference issues when applicable
+
 ## 📜 Scripts
 
 The project includes several npm scripts to help with development:
